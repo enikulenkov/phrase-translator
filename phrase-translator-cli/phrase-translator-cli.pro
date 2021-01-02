@@ -9,7 +9,8 @@ CONFIG -= app_bundle
 
 SOURCES += \
         consoleui.cpp \
-        main.cpp
+        main.cpp \
+        phrasetranslatorgoogle.cpp
 
 TRANSLATIONS += \
     phrase-translator-cli_en_US.ts
@@ -20,4 +21,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    consoleui.h
+    consoleui.h \
+    phrasetranslatorbase.h \
+    phrasetranslatorgoogle.h
