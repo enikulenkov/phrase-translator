@@ -3,13 +3,23 @@
 
 #include "phrasetranslatorbase.h"
 #include <QObject>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 class PhraseTranslatorGoogle : public PhraseTranslatorBase
 {
     Q_OBJECT
 public:
-    PhraseTranslatorGoogle();
-    virtual QString translate(const QString &text);
+    PhraseTranslatorGoogle(QObject *parent = nullptr);
+    virtual void translationStart(const QString &text);
+public slots:
+    void handleNetworkReply(QNetworkReply *reply);
+private:
+    void sendTranslateReq(const QString &text);
+    QString m_apiKey;
+    QNetworkAccessManager m_networkManager;
+    QNetworkReply *m_reply;
+    QString m_translation;
 };
 
 #endif // PHRASETRANSLATORGOOGLE_H

@@ -1,3 +1,4 @@
 gcloud/
-build-phrase-translator-cli-Desktop-Debug/
+build-network-test-*/
+build-phrase-translator-cli-Desktop-*/
 phrase-translator-cli/phrase-translator-cli.pro.user

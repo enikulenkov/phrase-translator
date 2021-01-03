@@ -11,10 +11,10 @@ public:
 
 public slots:
     void run();
+    void onTranslationFinished(QString translation);
 
 signals:
     void finished();
-
 };
 
 #endif // CONSOLEUI_H
