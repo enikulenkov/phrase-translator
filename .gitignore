@@ -1,4 +1,4 @@
 gcloud/
 build-network-test-*/
 build-phrase-translator-cli-Desktop-*/
-phrase-translator-cli/phrase-translator-cli.pro.user
+phrase-translator-cli/CMakeLists.txt.user
