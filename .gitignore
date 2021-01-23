@@ -1,4 +1,5 @@
 gcloud/
+data/
 build-network-test-*/
 build-phrase-translator-cli-Desktop-*/
-phrase-translator-cli/CMakeLists.txt.user
+CMakeLists.txt.user
