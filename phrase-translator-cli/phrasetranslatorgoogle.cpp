@@ -3,11 +3,11 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QDir>
 
 QString getApiKey()
 {
-    /* TODO: Correctly handle relative path to the file */
-    QFile keyFile("../gcloud/gtranslate_api_key");
+    QFile keyFile(QDir::homePath() + "/.phrase-translator/gcloud/gtranslate_api_key");
 
     if (!keyFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return QString();
@@ -24,7 +24,7 @@ void PhraseTranslatorGoogle::sendTranslateReq(const QString &text)
     QJsonObject obj;
     obj["q"] = text;
     obj["source"] = "en";
-    obj["target"] = "ru";
+    obj["target"] = "pt";
     obj["format"] = "text";
     QJsonDocument doc(obj);
     QByteArray data = doc.toJson();

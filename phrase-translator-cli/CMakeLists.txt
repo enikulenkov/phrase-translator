@@ -23,9 +23,27 @@ add_executable(phrase-translator-cli
   phrasetranslatorbase.h
   phrasetranslatorgoogle.cpp
   phrasetranslatorgoogle.h
+  postag.cpp
+  postag.h
+  postagger.cpp
+  postagger.h
+  phrasepattern.cpp
+  phrasepattern.h
+  phrasegenerator.cpp
+  phrasegenerator.h
+  wordlist.cpp
+  wordlist.h
   ${TS_FILES}
 )
-target_link_libraries(phrase-translator-cli Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network)
+target_link_libraries(phrase-translator-cli
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Network
+    meta-greedy-tagger
+    meta-sequence
+    meta-io
+    meta-index
+    meta-parser
+)
 
 if(COMMAND qt_create_translation)
     qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})

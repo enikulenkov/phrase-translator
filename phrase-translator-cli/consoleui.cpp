@@ -2,13 +2,29 @@
 #include <QNetworkAccessManager>
 #include "consoleui.h"
 #include "phrasetranslatorgoogle.h"
+#include "postag.h"
+#include "postagger.h"
+#include "wordlist.h"
+#include "phrasepattern.h"
+#include "phrasegenerator.h"
 
 void ConsoleUI::run()
 {
-    QString phrase = "Paul likes apples";
-    PhraseTranslatorGoogle *translator = new PhraseTranslatorGoogle(this->parent());
-    translator->translationStart(phrase);
-    connect(translator, &PhraseTranslatorGoogle::translationFinished, this, &ConsoleUI::onTranslationFinished);
+    auto tagger = POSTagger();
+    auto file = "/home/egor/src/phrase-translator/data/test/wiki_covid19.txt";
+    WordList wlist;
+    POSTag tags[] = {POSTag(POSTagEnum::NN), POSTag(POSTagEnum::VBZ), POSTag(POSTagEnum::NN)};
+    PhrasePattern pattern(tags, sizeof(tags)/sizeof(tags[0]));
+    PhraseGenerator gen;
+
+    wlist.readFromTxtFile(file);
+    tagger.doTagging(wlist);
+    for (int i = 0; i < 10; i++) {
+        QString phrase = QString::fromStdString(gen.generatePhrase(wlist, pattern));
+        PhraseTranslatorGoogle *translator = new PhraseTranslatorGoogle(this->parent());
+        translator->translationStart(phrase);
+        connect(translator, &PhraseTranslatorGoogle::translationFinished, this, &ConsoleUI::onTranslationFinished);
+    }
 }
 
 void ConsoleUI::onTranslationFinished(QString translation)
