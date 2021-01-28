@@ -25,6 +25,10 @@ const char* POSTag::toStr()
     case DTI: return "DTI";
     case DTS: return "DTS";
     case DTX: return "DTX";
+    case JJ:  return "JJ";
+    case JJR: return "JJR";
+    case JJS: return "JJS";
+    case JJT: return "JJT";
     case UNK: return "UNK";
     }
 }
@@ -55,5 +59,9 @@ POSNames::POSNames()
     m["DTI"] = DTI;
     m["DTS"] = DTS;
     m["DTX"] = DTX;
+    m["JJ"]  = JJ;
+    m["JJR"] = JJR;
+    m["JJS"] = JJS;
+    m["JJT"] = JJT;
     m["UNK"] = UNK;
 }

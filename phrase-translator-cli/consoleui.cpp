@@ -7,15 +7,16 @@
 #include "wordlist.h"
 #include "phrasepattern.h"
 #include "phrasegeneratorrandom.h"
+#include "phrasegeneratormarkov.h"
 
 void ConsoleUI::run()
 {
     auto tagger = POSTagger();
-    auto file = "/home/egor/src/phrase-translator/data/test/wiki_covid19.txt";
+    auto file = "/home/egor/src/phrase-translator/data/test/war_and_peace.txt";
     WordList wlist;
-    POSTag tags[] = {POSTag(POSTagEnum::NN), POSTag(POSTagEnum::VBZ), POSTag(POSTagEnum::NN)};
+    POSTag tags[] = {POSTag(POSTagEnum::NN), POSTag(POSTagEnum::VBD), POSTag(POSTagEnum::JJ)};
     PhrasePattern pattern(tags, sizeof(tags)/sizeof(tags[0]));
-    PhraseGeneratorRandom gen;
+    PhraseGeneratorMarkov gen;
 
     wlist.readFromTxtFile(file);
     tagger.doTagging(wlist);

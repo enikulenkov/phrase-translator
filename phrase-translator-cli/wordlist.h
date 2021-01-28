@@ -29,6 +29,16 @@ private:
     POSTag m_tag;
 };
 
+inline bool operator<(const Word& w1, const Word&w2)
+{
+    return w1.getStr() < w2.getStr();
+}
+
+inline bool operator==(const Word& w1, const Word&w2)
+{
+    return w1.getStr() == w2.getStr();
+}
+
 class WordList
 {
 public:
@@ -36,10 +46,12 @@ public:
     void readFromTxtFile(std::string filename);
     std::vector<Word> &vec() {return m_wvec; }
     std::vector<Word> const& vec() const {return m_wvec; }
+    std::map<WordId, std::map<WordId,double>> const& getNextWordOdds() const { return m_next_word_odds; }
 private:
     void addWord(Word &word);
     std::vector<Word> m_wvec;
-    std::map<WordId, std::map<WordId,float>> m_next_word_odds;
+    std::map<WordId, std::map<WordId,double>> m_next_word_odds;
+    void normalize_next_word_odds();
 };
 
 #endif // WORDLIST_H

@@ -11,16 +11,6 @@
 
 using namespace meta;
 
-inline bool operator<(const Word& w1, const Word&w2)
-{
-    return w1.getStr() < w2.getStr();
-}
-
-inline bool operator==(const Word& w1, const Word&w2)
-{
-    return w1.getStr() == w2.getStr();
-}
-
 WordList::WordList()
 {
 
@@ -38,6 +28,19 @@ void WordList::addWord(Word &word)
     }
     word.setId(id);
     m_wvec.push_back(word);
+}
+
+void WordList::normalize_next_word_odds()
+{
+    for (auto & i : m_next_word_odds) {
+        auto sum = 0.0;
+        for (const auto &w : i.second) {
+            sum += w.second;
+        }
+        for (auto &w : i.second) {
+            w.second = w.second / sum;
+        }
+    }
 }
 
 void WordList::readFromTxtFile(std::string filename)
@@ -58,14 +61,13 @@ void WordList::readFromTxtFile(std::string filename)
     word = Word(stream->next());
     addWord(word);
 
-    while (*stream)
-    {
+    while (*stream) {
         word = Word(stream->next());
         addWord(word);
         Q_ASSERT(word.getId() != INVALID_WORD_ID);
         if (m_wvec[prev].isWord()) {
             if (m_next_word_odds.count(prev) == 0) {
-                m_next_word_odds[prev] = std::map<WordId,float>();
+                m_next_word_odds[prev] = std::map<WordId,double>();
                 m_next_word_odds[prev][word.getId()] = 1;
             } else {
                 m_next_word_odds[prev][word.getId()] += 1;
@@ -73,4 +75,5 @@ void WordList::readFromTxtFile(std::string filename)
         }
         prev = word.getId();
     }
+    normalize_next_word_odds();
 }
