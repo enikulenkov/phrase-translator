@@ -1,14 +1,14 @@
 #include <QDebug>
 #include <random>
 #include <assert.h>
-#include "phrasegenerator.h"
+#include "phrasegeneratorrandom.h"
 
-PhraseGenerator::PhraseGenerator()
+PhraseGeneratorRandom::PhraseGeneratorRandom()
 {
 
 }
 
-std::string PhraseGenerator::generatePhrase(const WordList &wlist, const PhrasePattern &pattern)
+std::string PhraseGeneratorRandom::generatePhrase(const WordList &wlist, const PhrasePattern &pattern)
 {
     std::string res = "";
     auto wlist_size = wlist.vec().size();

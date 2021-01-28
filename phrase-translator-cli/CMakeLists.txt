@@ -29,8 +29,11 @@ add_executable(phrase-translator-cli
   postagger.h
   phrasepattern.cpp
   phrasepattern.h
-  phrasegenerator.cpp
-  phrasegenerator.h
+  phrasegeneratorbase.h
+  phrasegeneratorrandom.cpp
+  phrasegeneratorrandom.h
+  phrasegeneratormarkov.cpp
+  phrasegeneratormarkov.h
   wordlist.cpp
   wordlist.h
   ${TS_FILES}

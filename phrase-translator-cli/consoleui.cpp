@@ -6,7 +6,7 @@
 #include "postagger.h"
 #include "wordlist.h"
 #include "phrasepattern.h"
-#include "phrasegenerator.h"
+#include "phrasegeneratorrandom.h"
 
 void ConsoleUI::run()
 {
@@ -15,7 +15,7 @@ void ConsoleUI::run()
     WordList wlist;
     POSTag tags[] = {POSTag(POSTagEnum::NN), POSTag(POSTagEnum::VBZ), POSTag(POSTagEnum::NN)};
     PhrasePattern pattern(tags, sizeof(tags)/sizeof(tags[0]));
-    PhraseGenerator gen;
+    PhraseGeneratorRandom gen;
 
     wlist.readFromTxtFile(file);
     tagger.doTagging(wlist);
@@ -29,7 +29,11 @@ void ConsoleUI::run()
 
 void ConsoleUI::onTranslationFinished(QString translation)
 {
+    static auto num = 0;
     QTextStream qout(stdout);
     qout << translation << Qt::endl;
-    emit finished();
+    num++;
+    if (num == 10) {
+        emit finished();
+    }
 }
