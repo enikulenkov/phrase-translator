@@ -13,23 +13,25 @@ POSTag::POSTag(const std::string s)
 const char* POSTag::toStr()
 {
     switch (m_value) {
-    case NN:  return "NN";
-    case NNP: return "NNP";
-    case VB:  return "VB";
-    case VBD: return "VB";
-    case VBG: return "VBG";
-    case VBN: return "VBN";
-    case VBP: return "VBP";
-    case VBZ: return "VBZ";
-    case DT:  return "DT";
-    case DTI: return "DTI";
-    case DTS: return "DTS";
-    case DTX: return "DTX";
-    case JJ:  return "JJ";
-    case JJR: return "JJR";
-    case JJS: return "JJS";
-    case JJT: return "JJT";
-    case UNK: return "UNK";
+    case NN:   return "NN";
+    case NNP:  return "NNP";
+    case VB:   return "VB";
+    case VBD:  return "VB";
+    case VBG:  return "VBG";
+    case VBN:  return "VBN";
+    case VBP:  return "VBP";
+    case VBZ:  return "VBZ";
+    case DT:   return "DT";
+    case DTI:  return "DTI";
+    case DTS:  return "DTS";
+    case DTX:  return "DTX";
+    case JJ:   return "JJ";
+    case JJR:  return "JJR";
+    case JJS:  return "JJS";
+    case JJT:  return "JJT";
+    case PRP:  return "PRP";
+    case PRPP: return "PRP$";
+    case UNK:  return "UNK";
     }
 }
 
@@ -47,21 +49,23 @@ void POSTag::setTag(std::string s)
 
 POSNames::POSNames()
 {
-    m["NN"]  = NN;
-    m["NNP"] = NNP;
-    m["VB"]  = VB;
-    m["VBD"] = VBD;
-    m["VBG"] = VBG;
-    m["VBN"] = VBN;
-    m["VBP"] = VBP;
-    m["VBZ"] = VBZ;
-    m["DT"]  = DT;
-    m["DTI"] = DTI;
-    m["DTS"] = DTS;
-    m["DTX"] = DTX;
-    m["JJ"]  = JJ;
-    m["JJR"] = JJR;
-    m["JJS"] = JJS;
-    m["JJT"] = JJT;
-    m["UNK"] = UNK;
+    m["NN"]   = NN;
+    m["NNP"]  = NNP;
+    m["VB"]   = VB;
+    m["VBD"]  = VBD;
+    m["VBG"]  = VBG;
+    m["VBN"]  = VBN;
+    m["VBP"]  = VBP;
+    m["VBZ"]  = VBZ;
+    m["DT"]   = DT;
+    m["DTI"]  = DTI;
+    m["DTS"]  = DTS;
+    m["DTX"]  = DTX;
+    m["JJ"]   = JJ;
+    m["JJR"]  = JJR;
+    m["JJS"]  = JJS;
+    m["JJT"]  = JJT;
+    m["PRP"]  = PRP;
+    m["PRP$"] = PRPP;
+    m["UNK"]  = UNK;
 }

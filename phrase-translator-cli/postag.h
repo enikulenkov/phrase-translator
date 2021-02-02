@@ -8,6 +8,9 @@
  * The only change is "NP" (wiki) -> NNP (here). It seems MeTA toolkit
  * assigns "NNP" tag for proper nouns.
  *
+ * Another tag set is Penn Treebank (probably used by meta):
+ * https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html
+ *
  * MeTA documentation:
  * https://meta-toolkit.org/pos-tagging-tutorial.html
  */
@@ -28,6 +31,8 @@ typedef enum {
     JJR          , /* comparative adjective */
     JJS          , /* semantically superlative adjective (chief, top) */
     JJT          , /* morphologically superlative adjective (biggest) */
+    PRP  = 0x0040, /* Personal pronoun */
+    PRPP         , /* Possessive pronoun */
     UNK  = 0xFFFF
 } POSTagEnum;
 
