@@ -30,7 +30,9 @@ void POSTag::setTag(std::string s)
 POSNames::POSNames()
 {
     m["NN"]   = NN;
+    m["NNS"]  = NNS;
     m["NNP"]  = NNP;
+    m["NNPS"] = NNPS;
     m["VB"]   = VB;
     m["VBD"]  = VBD;
     m["VBG"]  = VBG;
@@ -47,6 +49,32 @@ POSNames::POSNames()
     m["JJT"]  = JJT;
     m["PRP"]  = PRP;
     m["PRP$"] = PRPP;
+    m["RB"]   = RB;
+    m["RBR"]  = RBR;
+    m["RBS"]  = RBS;
+    m["CC"]   = CC;
+    m["IN"]   = IN;
+    m["CD"]   = CD;
+    m["DT"]   = DT;
+    m["EX"]   = EX;
+    m["FW"]   = FW;
+    m["LS"]   = LS;
+    m["MD"]   = MD;
+    m["PDT"]  = PDT;
+    m["POS"]  = POS;
+    m["RP"]   = RP;
+    m["SYM"]  = SYM;
+    m["TO"]   = TO;
+    m["UH"]   = UH;
+    m["WDT"]  = WDT;
+    m["WP"]   = WP;
+    m["WP$"]  = WPP;
+    m["WRB"]  = WRB;
+    m["."]    = DOT;
+    m[":"]    = CLN;
+    m[","]    = COM;
+    m["``"]   = TCK;
+    m["''"]   = SQT;
     m["UNK"]  = UNK;
 
     for (const auto& kv : m) {

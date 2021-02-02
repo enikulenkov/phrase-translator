@@ -15,8 +15,10 @@
  * https://meta-toolkit.org/pos-tagging-tutorial.html
  */
 typedef enum {
-    NN   = 0x0000, /* singular or mass noun */
-    NNP          , /* proper noun or part of name phrase */
+    NN   = 0x0000, /* Noun, singular or mass */
+    NNS          , /* noun, plural */
+    NNP          , /* proper noun, singular */
+    NNPS         , /* proper noun, plural */
     VB   = 0x0010, /* verb, base form */
     VBD          , /* verb, past tense */
     VBG          , /* verb, present participle/gerund */
@@ -33,6 +35,31 @@ typedef enum {
     JJT          , /* morphologically superlative adjective (biggest) */
     PRP  = 0x0040, /* Personal pronoun */
     PRPP         , /* Possessive pronoun */
+    RB   = 0x0050, /* Adverb */
+    RBR          , /* Adverb, comparative */
+    RBS          , /* Adverb, superlative */
+    CC   = 0x0060, /* Coordinating conjunction */
+    IN           , /* Preposition or subordinating conjunction */
+    CD   = 0x0070, /* Cardinal number */
+    EX   = 0x0080, /* Existential "there" */
+    FW   = 0x0090, /* Foreign word */
+    LS   = 0x0100, /* List item marker */
+    MD   = 0x0110, /* Modal */
+    PDT  = 0x0120, /* Predeterminer */
+    POS  = 0x0130, /* Possessive ending */
+    RP   = 0x0140, /* Particle */
+    SYM  = 0x0150, /* Particle */
+    TO   = 0x0160, /* To */
+    UH   = 0x0170, /* Interjection */
+    WDT  = 0x0180, /* Wh-determiner */
+    WP           , /* Wh-pronoun */
+    WPP          , /* Wh-pronoun, possesive */
+    WRB          , /* Wh-adverb */
+    DOT  = 0x0190, /* dot */
+    CLN          , /* colon */
+    COM          , /* comma */
+    TCK          , /* backticks */
+    SQT          , /* single quotes */
     UNK  = 0xFFFF
 } POSTagEnum;
 
