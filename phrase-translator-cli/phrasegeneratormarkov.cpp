@@ -7,57 +7,73 @@ PhraseGeneratorMarkov::PhraseGeneratorMarkov()
 
 }
 
-std::string PhraseGeneratorMarkov::generatePhrase(const WordList &wlist, const PhrasePattern &pattern)
+static const Word *getFirstWord(std::mt19937 &gen, const WordList &wlist, const PhrasePattern &pattern)
 {
-    std::string res = "";
     auto wlist_size = wlist.vec().size();
-    std::random_device rd;
-    std::mt19937 gen(rd());
     std::uniform_int_distribution<size_t> distribution(1,wlist_size);
-    Word first_word, curr_word;
-
-    /* Find first word of required POS randomly */
     const auto& p = pattern.vec().at(0);
     auto start_idx = distribution(gen);
     size_t i = 0;
     auto found = false;
+    const Word *res;
 
     while (i < wlist_size && !found) {
-        auto word = wlist.vec().at(start_idx);
-        if (word.getTag() == p) {
-            first_word = word;
+        res = &wlist.vec().at(start_idx);
+        if (res->getTag() == p) {
             found = true;
         }
         start_idx = (start_idx + 1) % wlist_size;
         i++;
     }
     Q_ASSERT(found);
+    return res;
+}
 
-    res += first_word.getStr() + " ";
-    curr_word = first_word;
+std::string PhraseGeneratorMarkov::generatePhrase(const WordList &wlist, const PhrasePattern &pattern)
+{
+    std::string res = "";
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::vector<const Word*> res_words;
+    const Word* curr_word;
+    size_t pattern_idx = 0;
 
-    /* Find others according to probabilities */
-    for (size_t i = 1; i < pattern.vec().size(); i++) {
+    while (pattern_idx < pattern.vec().size()) {
         std::uniform_real_distribution<> dis(0.0, 1.0);
         auto dice = dis(gen);
         auto sum = 0.0;
-        Word match;
+        const Word *match = NULL;
 
-        for (const auto& next_word : wlist.getNextWordOdds().at(curr_word.getId())) {
-            sum += next_word.second;
-            auto w = wlist.vec().at(next_word.first);
-            bool tag_match = w.getTag() == pattern.vec()[i];
-            if (tag_match) {
-                match = w;
-                if (sum >= dice) {
-                    break;
+        if (pattern_idx == 0) {
+            curr_word = getFirstWord(gen, wlist, pattern);
+            res_words.push_back(curr_word);
+            pattern_idx++;
+        } else {
+            for (const auto& next_word : wlist.getNextWordOdds().at(curr_word->getId())) {
+                sum += next_word.second;
+                const Word *w = &wlist.vec().at(next_word.first);
+                bool tag_match = w->getTag() == pattern.vec()[pattern_idx];
+                if (tag_match) {
+                    match = w;
+                    if (sum >= dice) {
+                        break;
+                    }
                 }
             }
+            if (match != NULL) {
+                curr_word = match;
+                res_words.push_back(curr_word);
+                pattern_idx++;
+            } else {
+                /* Start the process over for simplicity */
+                pattern_idx = 0;
+                res_words.clear();
+            }
         }
-        /* TODO: Do one step back */
-        Q_ASSERT(match.getStr() != "");
-        res += match.getStr() + " ";
-        curr_word = match;
+    }
+
+    for (const Word* w : res_words) {
+        res += w->getStr() + " ";
     }
     return res;
 }

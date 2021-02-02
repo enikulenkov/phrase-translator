@@ -21,7 +21,7 @@ public:
     POSTag const& getTag() const {return m_tag; }
     bool isWord() { return m_str != "" && m_str != "<s>" && m_str != "</s>"; }
     bool operator<(const Word& other) { return m_str < other.m_str; }
-    WordId getId() { return m_id; }
+    WordId getId() const { return m_id; }
     void setId(WordId id) { m_id = id; }
 private:
     std::string m_str;
