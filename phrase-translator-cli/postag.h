@@ -40,6 +40,7 @@ class POSNames {
 public:
     POSNames();
     std::map<std::string,POSTagEnum> m;
+    std::map<POSTagEnum,std::string> m_r; /* reverse map of 'm' */
 };
 
 class POSTag {
@@ -49,7 +50,7 @@ public:
     bool isNoun() const { return !!(m_value & 0x0F); }
     bool isVerb() const { return !!(m_value & 0xF0); }
     bool operator==(const POSTag& other) { return m_value == other.m_value; }
-    const char* toStr();
+    const std::string toStr() const;
     void setTag(POSTagEnum v) { m_value = v; }
     void setTag(std::string s);
     POSTagEnum value(void) const {return m_value;}

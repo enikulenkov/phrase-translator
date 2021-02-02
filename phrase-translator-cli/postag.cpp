@@ -10,29 +10,9 @@ POSTag::POSTag(const std::string s)
     m_value = s_posNames.m.find(s)->second;
 }
 
-const char* POSTag::toStr()
+const std::string POSTag::toStr() const
 {
-    switch (m_value) {
-    case NN:   return "NN";
-    case NNP:  return "NNP";
-    case VB:   return "VB";
-    case VBD:  return "VB";
-    case VBG:  return "VBG";
-    case VBN:  return "VBN";
-    case VBP:  return "VBP";
-    case VBZ:  return "VBZ";
-    case DT:   return "DT";
-    case DTI:  return "DTI";
-    case DTS:  return "DTS";
-    case DTX:  return "DTX";
-    case JJ:   return "JJ";
-    case JJR:  return "JJR";
-    case JJS:  return "JJS";
-    case JJT:  return "JJT";
-    case PRP:  return "PRP";
-    case PRPP: return "PRP$";
-    case UNK:  return "UNK";
-    }
+    return s_posNames.m_r[m_value];
 }
 
 void POSTag::setTag(std::string s)
@@ -68,4 +48,8 @@ POSNames::POSNames()
     m["PRP"]  = PRP;
     m["PRP$"] = PRPP;
     m["UNK"]  = UNK;
+
+    for (const auto& kv : m) {
+        m_r[kv.second] = kv.first;
+    }
 }
