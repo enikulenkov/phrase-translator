@@ -38,7 +38,7 @@ void POSTag::setTag(std::string s)
     auto found = s_posNames.m.find(s);
     //Q_ASSERT(found != s_posNames.m.end());
     if (found == s_posNames.m.end()) {
-        qDebug() << s.c_str();
+        qWarning() << s.c_str();
         m_value = UNK;
     } else {
         m_value = found->second;
