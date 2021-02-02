@@ -7,7 +7,7 @@
 class PhrasePattern
 {
 public:
-    PhrasePattern(POSTag *tags, int tags_size);
+    PhrasePattern(POSTag *tags, size_t tags_size);
     std::vector<POSTag> const& vec() const { return m_vec; }
 private:
     std::vector<POSTag> m_vec;
