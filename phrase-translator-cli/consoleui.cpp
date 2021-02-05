@@ -1,3 +1,4 @@
+#include <QtDebug>
 #include <QTextStream>
 #include <QNetworkAccessManager>
 #include "consoleui.h"
@@ -11,11 +12,16 @@
 
 void ConsoleUI::initWlist()
 {
+    QSettings settings;
     auto tagger = POSTagger();
-    auto file = "/home/egor/src/phrase-translator/data/test/war_and_peace.txt";
+    auto file = settings.value("corpus/data").toString();
 
-    m_wlist.readFromTxtFile(file);
-    tagger.doTagging(m_wlist);
+    if (file.isEmpty()) {
+        exitWithError(1, "corpus/data is not set in configuration!");
+    } else {
+        m_wlist.readFromTxtFile(file.toStdString());
+        tagger.doTagging(m_wlist);
+    }
 }
 
 void ConsoleUI::genPhrase()
@@ -39,8 +45,21 @@ void ConsoleUI::translatePhrase()
     connect(translator, &PhraseTranslatorGoogle::translationFinished, this, &ConsoleUI::onTranslationFinished);
 }
 
+void ConsoleUI::exitWithError(int err, QString err_msg)
+{
+    QTextStream qerr(stderr);
+
+    qCritical() << err_msg << Qt::endl;
+    qerr << err_msg << Qt::endl;
+    /* TODO: Set exit code somehow... */
+    (void)err;
+    emit finished();
+}
+
 void ConsoleUI::run()
 {
+    QSettings settings;
+
     initWlist();
     translatePhrase();
 }

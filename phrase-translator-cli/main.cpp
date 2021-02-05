@@ -49,6 +49,9 @@ int main(int argc, char *argv[])
 
     QCoreApplication a(argc, argv);
 
+    QCoreApplication::setOrganizationName("PhraseTranslator");
+    QCoreApplication::setOrganizationDomain("mydomain.com");
+    QCoreApplication::setApplicationName("app");
     ConsoleUI *ui = new ConsoleUI(&a);
     QObject::connect(ui, SIGNAL(finished()), &a, SLOT(quit()));
     QTimer::singleShot(0, ui, SLOT(run()));

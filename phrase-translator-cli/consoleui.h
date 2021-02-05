@@ -2,6 +2,7 @@
 #define CONSOLEUI_H
 
 #include <QObject>
+#include <QSettings>
 #include "wordlist.h"
 
 class ConsoleUI : public QObject
@@ -14,6 +15,7 @@ private:
     void initWlist();
     void genPhrase();
     void translatePhrase();
+    void exitWithError(int err, QString err_msg);
     WordList m_wlist;
     QString m_curr_phrase;
 
