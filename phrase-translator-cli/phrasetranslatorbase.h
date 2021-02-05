@@ -8,7 +8,7 @@ class PhraseTranslatorBase : public QObject
     Q_OBJECT
 public:
     PhraseTranslatorBase(QObject *parent = nullptr) : QObject(parent) {}
-    virtual void translationStart(const QString &text) = 0;
+    virtual void translationStart(const QString &text, const QString &targetLang) = 0;
 
 signals:
     void translationFinished(const QString &result);

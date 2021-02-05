@@ -16,7 +16,7 @@ QString getApiKey()
     return QString(line);
 }
 
-void PhraseTranslatorGoogle::sendTranslateReq(const QString &text)
+void PhraseTranslatorGoogle::sendTranslateReq(const QString &text, const QString &targetLang)
 {
     QString url = "https://translation.googleapis.com/language/translate/v2?key=";
     url.append(m_apiKey);
@@ -24,7 +24,7 @@ void PhraseTranslatorGoogle::sendTranslateReq(const QString &text)
     QJsonObject obj;
     obj["q"] = text;
     obj["source"] = "en";
-    obj["target"] = "pt";
+    obj["target"] = targetLang;
     obj["format"] = "text";
     QJsonDocument doc(obj);
     QByteArray data = doc.toJson();
@@ -44,9 +44,9 @@ PhraseTranslatorGoogle::PhraseTranslatorGoogle(QObject *parent) : PhraseTranslat
         this, &PhraseTranslatorGoogle::handleNetworkReply);
 }
 
-void PhraseTranslatorGoogle::translationStart(const QString &text)
+void PhraseTranslatorGoogle::translationStart(const QString &text, const QString &targetLang)
 {
-    sendTranslateReq(text);
+    sendTranslateReq(text, targetLang);
 }
 
 void PhraseTranslatorGoogle::handleNetworkReply(QNetworkReply *reply)

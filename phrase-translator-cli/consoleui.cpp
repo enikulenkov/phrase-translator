@@ -41,7 +41,7 @@ void ConsoleUI::translatePhrase()
     qout << "Generated phrase for translation:" << Qt::endl;
     qout << m_curr_phrase << Qt::endl;
 
-    translator->translationStart(m_curr_phrase);
+    translator->translationStart(m_curr_phrase, m_target_lang);
     connect(translator, &PhraseTranslatorGoogle::translationFinished, this, &ConsoleUI::onTranslationFinished);
 }
 
@@ -60,8 +60,13 @@ void ConsoleUI::run()
 {
     QSettings settings;
 
-    initWlist();
-    translatePhrase();
+    m_target_lang = QSettings().value("translation/languages").toString();
+    if (m_target_lang.isEmpty()) {
+        exitWithError(1, "translation/languages is not set in configuration!");
+    } else {
+        initWlist();
+        translatePhrase();
+    }
 }
 
 void ConsoleUI::onTranslationFinished(QString translation)

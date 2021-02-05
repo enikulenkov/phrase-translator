@@ -18,6 +18,7 @@ private:
     void exitWithError(int err, QString err_msg);
     WordList m_wlist;
     QString m_curr_phrase;
+    QString m_target_lang;
 
 public slots:
     void run();
