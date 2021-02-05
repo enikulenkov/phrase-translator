@@ -9,32 +9,58 @@
 #include "phrasegeneratorrandom.h"
 #include "phrasegeneratormarkov.h"
 
-void ConsoleUI::run()
+void ConsoleUI::initWlist()
 {
     auto tagger = POSTagger();
     auto file = "/home/egor/src/phrase-translator/data/test/war_and_peace.txt";
-    WordList wlist;
-    POSTag tags[] = {POSTag(POSTagEnum::NN), POSTag(POSTagEnum::VBD), POSTag(POSTagEnum::JJ)};
-    PhrasePattern pattern(tags, sizeof(tags)/sizeof(tags[0]));
-    PhraseGeneratorMarkov gen;
 
-    wlist.readFromTxtFile(file);
-    tagger.doTagging(wlist);
-    for (int i = 0; i < 10; i++) {
-        QString phrase = QString::fromStdString(gen.generatePhrase(wlist, pattern));
-        PhraseTranslatorGoogle *translator = new PhraseTranslatorGoogle(this->parent());
-        translator->translationStart(phrase);
-        connect(translator, &PhraseTranslatorGoogle::translationFinished, this, &ConsoleUI::onTranslationFinished);
-    }
+    m_wlist.readFromTxtFile(file);
+    tagger.doTagging(m_wlist);
+}
+
+void ConsoleUI::genPhrase()
+{
+    PhraseGeneratorMarkov gen;
+    POSTag tags[] = {POSTag(POSTagEnum::NNP), POSTag(POSTagEnum::VBD), POSTag(POSTagEnum::TO), POSTag(POSTagEnum::VB)};
+    PhrasePattern pattern(tags, sizeof(tags)/sizeof(tags[0]));
+    m_curr_phrase = QString::fromStdString(gen.generatePhrase(m_wlist, pattern));
+}
+
+void ConsoleUI::translatePhrase()
+{
+    PhraseTranslatorGoogle *translator = new PhraseTranslatorGoogle(this->parent());
+    QTextStream qout(stdout);
+
+    genPhrase();
+    qout << "Generated phrase for translation:" << Qt::endl;
+    qout << m_curr_phrase << Qt::endl;
+
+    translator->translationStart(m_curr_phrase);
+    connect(translator, &PhraseTranslatorGoogle::translationFinished, this, &ConsoleUI::onTranslationFinished);
+}
+
+void ConsoleUI::run()
+{
+    initWlist();
+    translatePhrase();
 }
 
 void ConsoleUI::onTranslationFinished(QString translation)
 {
-    static auto num = 0;
     QTextStream qout(stdout);
+    QTextStream qin(stdin);
+    QString user_reply;
+
+    qout << "Press <Enter> to see a translation" << Qt::endl;
+    user_reply = qin.readLine();
+    (void)user_reply;
+    qout << "Translation:" << Qt::endl;
     qout << translation << Qt::endl;
-    num++;
-    if (num == 10) {
+    qout << "One more phrase? [Y/n]" << Qt::endl;
+    user_reply = qin.readLine();
+    if (user_reply.startsWith('y') || user_reply.startsWith('Y') || user_reply.isEmpty()) {
+        translatePhrase();
+    } else {
         emit finished();
     }
 }
