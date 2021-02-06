@@ -5,6 +5,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QRandomGenerator>
 #include "phrasetranslatorgoogle.h"
 #include "postag.h"
 #include "postagger.h"
@@ -105,7 +106,7 @@ failure:
 void ConsoleUI::genPhrase()
 {
     PhraseGeneratorMarkov gen;
-    PhrasePattern pattern = m_patterns[0];
+    PhrasePattern pattern = m_patterns[QRandomGenerator::global()->bounded(m_patterns.size())];
     m_curr_phrase = QString::fromStdString(gen.generatePhrase(m_wlist, pattern));
 }
 
