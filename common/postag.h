@@ -74,6 +74,7 @@ class POSTag {
 public:
     POSTag(const POSTagEnum v) : m_value(v) {};
     POSTag(const std::string s);
+    POSTag() : m_value(POSTagEnum::UNK) {};
     bool isNoun() const { return !!(m_value & 0x0F); }
     bool isVerb() const { return !!(m_value & 0xF0); }
     bool operator==(const POSTag& other) { return m_value == other.m_value; }

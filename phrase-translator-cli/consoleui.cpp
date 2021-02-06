@@ -1,6 +1,10 @@
 #include <QtDebug>
 #include <QTextStream>
 #include <QNetworkAccessManager>
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 #include "phrasetranslatorgoogle.h"
 #include "postag.h"
 #include "postagger.h"
@@ -33,11 +37,75 @@ void ConsoleUI::initWlist()
     }
 }
 
+int ConsoleUI::initPatterns()
+{
+    QSettings settings;
+    QTextStream qerr(stderr);
+    auto patterns_json_file = settings.value("corpus/patterns").toString();
+    if (patterns_json_file.isEmpty()) {
+        qerr << "No corpus/patterns setting!" << Qt::endl;
+        return 1;
+    }
+    QFile f(patterns_json_file);
+    if (!f.open(QIODevice::ReadOnly)) {
+        qerr << "Can't open patterns file for reading " << patterns_json_file << Qt::endl;
+        return 1;
+    }
+    QByteArray data = f.readAll();
+    f.close();
+
+    QJsonParseError json_err;
+    QJsonDocument doc = QJsonDocument::fromJson(data, &json_err);
+    if (doc.isNull()) {
+        qerr << "Can't parse JSON file " << patterns_json_file << Qt::endl;
+        qerr << json_err.errorString() << Qt::endl;
+        return 1;
+    }
+
+    QJsonArray patterns_array = doc.array();
+    if (patterns_array.isEmpty()) {
+        qerr << "Patterns array is empty (or root is object, not array)" << Qt::endl;
+        return 1;
+    }
+    for (auto p_ref : patterns_array) {
+        QJsonObject p_obj = p_ref.toObject();
+        if (p_obj.isEmpty()) {
+            qerr << "Wrong object in patterns array (or not object)" << Qt::endl;
+            goto failure;
+        }
+        QJsonArray pos_tags_list = p_obj["pattern"].toArray();
+        if (pos_tags_list.isEmpty()) {
+            qerr << "Empty POS tags array (or invalid array)" << Qt::endl;
+            goto failure;
+        }
+        size_t tags_num = static_cast<size_t>(pos_tags_list.size());
+        POSTag *tags = new POSTag[tags_num];
+        auto i = 0;
+        for (auto ptag_ref : pos_tags_list) {
+            auto ptag_str = ptag_ref.toString();
+            tags[i].setTag(ptag_str.toStdString());
+            if (tags[i].value() == POSTagEnum::UNK) {
+                qerr << "Can't parse POS tag " << ptag_str << Qt::endl;
+                delete[] tags;
+                goto failure;
+            }
+            i++;
+        }
+        m_patterns.append(PhrasePattern(tags, tags_num));
+        delete[] tags;
+    }
+
+    return 0;
+
+failure:
+    m_patterns.clear();
+    return 1;
+}
+
 void ConsoleUI::genPhrase()
 {
     PhraseGeneratorMarkov gen;
-    POSTag tags[] = {POSTag(POSTagEnum::NNP), POSTag(POSTagEnum::VBD), POSTag(POSTagEnum::TO), POSTag(POSTagEnum::VB)};
-    PhrasePattern pattern(tags, sizeof(tags)/sizeof(tags[0]));
+    PhrasePattern pattern = m_patterns[0];
     m_curr_phrase = QString::fromStdString(gen.generatePhrase(m_wlist, pattern));
 }
 
@@ -73,6 +141,10 @@ void ConsoleUI::run()
     if (m_target_lang.isEmpty()) {
         exitWithError(1, "translation/languages is not set in configuration!");
     } else {
+        int ret = initPatterns();
+        if (ret != 0) {
+            exitWithError(ret, "Can't initialize patterns! Check corpus/patterns configuration");
+        }
         initWlist();
         translatePhrase();
     }
