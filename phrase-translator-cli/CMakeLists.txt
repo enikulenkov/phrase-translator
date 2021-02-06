@@ -20,27 +20,12 @@ add_executable(phrase-translator-cli
   main.cpp
   consoleui.cpp
   consoleui.h
-  phrasetranslatorbase.h
-  phrasetranslatorgoogle.cpp
-  phrasetranslatorgoogle.h
-  postag.cpp
-  postag.h
-  postagger.cpp
-  postagger.h
-  phrasepattern.cpp
-  phrasepattern.h
-  phrasegeneratorbase.h
-  phrasegeneratorrandom.cpp
-  phrasegeneratorrandom.h
-  phrasegeneratormarkov.cpp
-  phrasegeneratormarkov.h
-  wordlist.cpp
-  wordlist.h
   ${TS_FILES}
 )
 target_link_libraries(phrase-translator-cli
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Network
+    phrase-translator-common
     meta-greedy-tagger
     meta-sequence
     meta-io

@@ -1,7 +1,6 @@
 #include <QtDebug>
 #include <QTextStream>
 #include <QNetworkAccessManager>
-#include "consoleui.h"
 #include "phrasetranslatorgoogle.h"
 #include "postag.h"
 #include "postagger.h"
@@ -9,6 +8,7 @@
 #include "phrasepattern.h"
 #include "phrasegeneratorrandom.h"
 #include "phrasegeneratormarkov.h"
+#include "consoleui.h"
 
 void ConsoleUI::initWlist()
 {
