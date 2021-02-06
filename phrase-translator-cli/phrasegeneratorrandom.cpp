@@ -14,11 +14,11 @@ std::string PhraseGeneratorRandom::generatePhrase(const WordList &wlist, const P
     auto wlist_size = wlist.vec().size();
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<size_t> distribution(1,wlist_size);
+    std::uniform_int_distribution<int> distribution(1,wlist_size);
 
     for (auto& p : pattern.vec()) {
         auto start_idx = distribution(gen);
-        size_t i = 0;
+        auto i = 0;
         auto found = false;
 
         while (i < wlist_size && !found) {

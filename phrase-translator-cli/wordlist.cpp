@@ -1,4 +1,6 @@
 #include <QDebug>
+#include <QFile>
+#include <QDataStream>
 #include "wordlist.h"
 #include "meta/analyzers/analyzer.h"
 #include "meta/analyzers/tokenizers/icu_tokenizer.h"
@@ -34,11 +36,11 @@ void WordList::normalize_next_word_odds()
 {
     for (auto & i : m_next_word_odds) {
         auto sum = 0.0;
-        for (const auto &w : i.second) {
-            sum += w.second;
+        for (const auto &w : i) {
+            sum += w;
         }
-        for (auto &w : i.second) {
-            w.second = w.second / sum;
+        for (auto &w : i) {
+            w = w / sum;
         }
     }
 }
@@ -67,7 +69,7 @@ void WordList::readFromTxtFile(std::string filename)
         Q_ASSERT(word.getId() != INVALID_WORD_ID);
         if (m_wvec[prev].isWord()) {
             if (m_next_word_odds.count(prev) == 0) {
-                m_next_word_odds[prev] = std::map<WordId,double>();
+                m_next_word_odds[prev] = QMap<WordId,double>();
                 m_next_word_odds[prev][word.getId()] = 1;
             } else {
                 m_next_word_odds[prev][word.getId()] += 1;
@@ -76,4 +78,39 @@ void WordList::readFromTxtFile(std::string filename)
         prev = word.getId();
     }
     normalize_next_word_odds();
+}
+
+void WordList::store(QString outfile)
+{
+   QFile file(outfile);
+   file.open(QIODevice::WriteOnly);
+   QDataStream out(&file);
+
+   /* Magic number and version */
+   out << (quint32)0x050B0A03;
+   out << (quint32)0x01;
+
+   out.setVersion(QDataStream::Qt_5_15);
+
+   out << m_wvec;
+   out << m_next_word_odds;
+}
+
+void WordList::load(QString infile)
+{
+   QFile file(infile);
+   file.open(QIODevice::ReadOnly);
+   QDataStream in(&file);
+
+   quint32 magic, version;
+   in >> magic;
+   /* TODO: Replace with error code */
+   assert(magic == 0x050B0A03);
+   in >> version;
+   assert(version == 0x01);
+
+   in.setVersion(QDataStream::Qt_5_15);
+
+   in >> m_wvec;
+   in >> m_next_word_odds;
 }

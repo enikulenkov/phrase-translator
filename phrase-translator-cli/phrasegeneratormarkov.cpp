@@ -10,10 +10,10 @@ PhraseGeneratorMarkov::PhraseGeneratorMarkov()
 static const Word *getFirstWord(std::mt19937 &gen, const WordList &wlist, const PhrasePattern &pattern)
 {
     auto wlist_size = wlist.vec().size();
-    std::uniform_int_distribution<size_t> distribution(1,wlist_size);
+    std::uniform_int_distribution<int> distribution(1,wlist_size);
     const auto& p = pattern.vec().at(0);
     auto start_idx = distribution(gen);
-    size_t i = 0;
+    auto i = 0;
     auto found = false;
     const Word *res;
 
@@ -43,15 +43,18 @@ std::string PhraseGeneratorMarkov::generatePhrase(const WordList &wlist, const P
         auto dice = dis(gen);
         auto sum = 0.0;
         const Word *match = NULL;
+        auto nextWordOdds = wlist.getNextWordOdds();
 
         if (pattern_idx == 0) {
             curr_word = getFirstWord(gen, wlist, pattern);
             res_words.push_back(curr_word);
             pattern_idx++;
         } else {
-            for (const auto& next_word : wlist.getNextWordOdds().at(curr_word->getId())) {
-                sum += next_word.second;
-                const Word *w = &wlist.vec().at(next_word.first);
+            QMapIterator<WordId,double> it(nextWordOdds[curr_word->getId()]);
+            while (it.hasNext()) {
+                it.next();
+                sum += it.value();
+                const Word *w = &wlist.vec().at(it.key());
                 bool tag_match = w->getTag() == pattern.vec()[pattern_idx];
                 if (tag_match) {
                     match = w;

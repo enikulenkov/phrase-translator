@@ -2,12 +2,14 @@
 #define WORDLIST_H
 
 #include <string>
-#include <vector>
-#include <map>
+#include <QString>
+#include <QVector>
+#include <QDataStream>
+#include <QMap>
 #include "postag.h"
 
-const size_t INVALID_WORD_ID = std::numeric_limits<size_t>::max();
-using WordId = size_t;
+const int INVALID_WORD_ID = std::numeric_limits<int>::max();
+using WordId = int;
 
 class Word
 {
@@ -16,6 +18,8 @@ public:
     Word(const std::string &str, const POSTag &tag) : m_str(str), m_tag(tag) {};
     Word(const std::string &str) : m_str(str), m_tag(POSTag(POSTagEnum::UNK)) {};
     std::string const& getStr() const { return m_str; }
+    void setStr(std::string &str) { m_str = str; }
+    void setStr(QString &str) { m_str = str.toStdString(); }
     void setTag(POSTagEnum tag) { m_tag.setTag(tag); }
     void setTag(std::string tag) { m_tag.setTag(tag); }
     POSTag const& getTag() const {return m_tag; }
@@ -28,6 +32,29 @@ private:
     WordId m_id = INVALID_WORD_ID;
     POSTag m_tag;
 };
+
+inline QDataStream &operator<<(QDataStream &stream, const Word &w)
+{
+    stream << QString::fromStdString(w.getStr());
+    stream << w.getId();
+    stream << QString::fromStdString(w.getTag().toStr());
+    return stream;
+}
+
+inline QDataStream &operator>>(QDataStream &stream, Word &w)
+{
+    QString str;
+    WordId id;
+    QString tag;
+
+    stream >> str;
+    w.setStr(str);
+    stream >> id;
+    w.setId(id);
+    stream >> tag;
+    w.setTag(tag.toStdString());
+    return stream;
+}
 
 inline bool operator<(const Word& w1, const Word&w2)
 {
@@ -44,13 +71,15 @@ class WordList
 public:
     WordList();
     void readFromTxtFile(std::string filename);
-    std::vector<Word> &vec() {return m_wvec; }
-    std::vector<Word> const& vec() const {return m_wvec; }
-    std::map<WordId, std::map<WordId,double>> const& getNextWordOdds() const { return m_next_word_odds; }
+    QVector<Word> &vec() {return m_wvec; }
+    QVector<Word> const& vec() const {return m_wvec; }
+    QMap<WordId, QMap<WordId,double>> const& getNextWordOdds() const { return m_next_word_odds; }
+    void store(QString outfile);
+    void load(QString infile);
 private:
     void addWord(Word &word);
-    std::vector<Word> m_wvec;
-    std::map<WordId, std::map<WordId,double>> m_next_word_odds;
+    QVector<Word> m_wvec;
+    QMap<WordId, QMap<WordId,double>> m_next_word_odds;
     void normalize_next_word_odds();
 };
 
