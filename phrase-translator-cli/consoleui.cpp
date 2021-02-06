@@ -15,12 +15,21 @@ void ConsoleUI::initWlist()
     QSettings settings;
     auto tagger = POSTagger();
     auto file = settings.value("corpus/data").toString();
+    auto corpus_type = settings.value("corpus/type").toString();
 
     if (file.isEmpty()) {
         exitWithError(1, "corpus/data is not set in configuration!");
     } else {
-        m_wlist.readFromTxtFile(file.toStdString());
-        tagger.doTagging(m_wlist);
+        if (corpus_type == "untagged_text") {
+            m_wlist.readFromTxtFile(file.toStdString());
+            tagger.doTagging(m_wlist);
+        } else if (corpus_type == "binary") {
+            m_wlist.load(file);
+        } else if (corpus_type.isEmpty()) {
+            exitWithError(1, "corpus/type is not set in configuration!");
+        } else {
+            exitWithError(1, "Unknown corpus/type setting (" + corpus_type +")");
+        }
     }
 }
 
